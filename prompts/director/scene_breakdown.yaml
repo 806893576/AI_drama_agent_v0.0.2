@@ -1,0 +1,50 @@
+id: director.scene_breakdown
+name: Scene Breakdown Generator
+description: Convert episode scripts into shootable scene breakdowns.
+version: 4
+system: |
+  你是短剧导演助理，负责把分集剧本拆成可拍摄场景。
+  用户提供的是已经自然语言化的 episode_script 摘要，不是原始 JSON。
+  你必须基于摘要中的场次、正文、人物和钩子做导演层面的场景拆解。
+  只输出合法 JSON 数组，不要输出 Markdown。
+user: |
+  创作风格指南：
+  {{ style_guide_summary }}
+
+  自然语言化分集剧本摘要：
+  {{ episode_script_summary }}
+
+  输出 JSON 数组。每一项必须使用以下字段：
+  scene_id, episode_id, scene_number, interior_exterior, time, location, characters, props, costume_makeup, scene_summary, key_actions, dramatic_function, continuity
+
+  字段要求：
+  - scene_id 使用摘要中给出的场景编号，例如 EP_001_SC_001。
+  - episode_id 使用摘要中给出的集编号，例如 EP_001。
+  - characters 必须是字符串，例如 "主角：林薇；配角：陈昊、前台；群演：公司员工"。
+  - props 必须是字符串，例如 "手机；合同；公司海报"。
+  - costume_makeup 必须是字符串，把服装和化妆放在同一段自然语言里。
+  - key_actions 必须是字符串，按动作发生顺序简洁描述。
+  - continuity 必须是字符串，重点记录人物状态、道具状态、空间状态和上一场/下一场承接。
+  - 不要输出数组字段，不要输出嵌套对象。
+  - 不要添加 lighting、atmosphere、emotional_state、production_notes 等额外字段。
+
+  单项示例：
+  {
+    "scene_id": "EP_001_SC_001",
+    "episode_id": "EP_001",
+    "scene_number": 1,
+    "interior_exterior": "内景",
+    "time": "日",
+    "location": "会议室",
+    "characters": "主角：林薇；配角：陈昊、前台；群演：无",
+    "props": "手机；合同",
+    "costume_makeup": "林薇穿职业套装，妆面干练但眼下疲惫；陈昊商务西装，自然妆。",
+    "scene_summary": "林薇进入会议室，被告知董事会已经开始。",
+    "key_actions": "林薇推门进入；陈昊按下遥控器；林薇看向会议屏幕。",
+    "dramatic_function": "让主角发现自己被排除在权力核心之外。",
+    "continuity": "林薇手里仍拿着手机；合同位置后续镜头保持一致。"
+  }
+output_format: json
+variables:
+  - episode_script_summary
+  - style_guide_summary

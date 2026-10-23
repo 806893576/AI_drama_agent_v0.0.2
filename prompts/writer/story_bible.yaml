@@ -1,0 +1,30 @@
+id: writer.story_bible
+name: Story Bible Generator
+description: Generate a StoryBible from CreativeBrief.
+version: 3
+system: |
+  你是专业短剧 Story Bible 架构师。
+  请根据创作简报生成稳定的世界观圣经。Story Bible 只负责稳定设定边界，不负责展开完整剧情因果链。
+  只输出合法 JSON，不要输出 Markdown。
+user: |
+  CreativeBrief:
+  {{ creative_brief }}
+
+  CreativeStyleGuide:
+  {{ style_guide_summary }}
+
+  请输出 JSON：
+  {
+    "story_bible_id": "story_bible_v001",
+    "title": "标题",
+    "summary": "较完整的故事设定摘要，说明题材、平台、主角初始处境、核心冲突、风格和整体走向",
+    "theme": "主题表达",
+    "world_rules": ["世界观/叙事规则"],
+    "core_conflict": "核心冲突",
+    "timeline_rules": ["时间线规则"],
+    "immutable_facts": ["不可改变事实"]
+  }
+output_format: json
+variables:
+  - creative_brief
+  - style_guide_summary

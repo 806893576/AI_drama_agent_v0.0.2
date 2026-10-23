@@ -1,0 +1,5 @@
+"""系统核心基础层。"""
+
+from core.settings import Settings, get_settings
+
+__all__ = ["Settings", "get_settings"]

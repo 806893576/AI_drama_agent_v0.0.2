@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI短剧制作方案生成智能体流程图 V4</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --paper: #ffffff;
+      --ink: #102033;
+      --muted: #637186;
+      --line: #64748b;
+      --soft: #a8b4c4;
+      --input: #2563eb;
+      --producer: #1d4ed8;
+      --writer: #16a34a;
+      --review: #d97706;
+      --repair: #dc2626;
+      --director: #7c3aed;
+      --av: #0891b2;
+      --art: #db2777;
+      --asset: #ea580c;
+      --safety: #15803d;
+      --state: #f97316;
+      --score: #0f766e;
+      --lane: #f8fafc;
+      --shadow: 0 18px 48px rgba(15, 23, 42, .12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(180deg, #fbfdff 0%, var(--bg) 100%);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", Arial, sans-serif;
+    }
+
+    .page {
+      max-width: 1960px;
+      min-width: 1220px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 1120px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      flex: 0 0 470px;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid #d7e0ed;
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      padding: 8px 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, .06);
+    }
+
+    button:hover,
+    button.active {
+      border-color: var(--producer);
+      background: #eef5ff;
+      color: #1746a2;
+    }
+
+    .board {
+      overflow: auto;
+      border: 1px solid #dfe7f2;
+      border-radius: 16px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    svg {
+      display: block;
+      width: 1900px;
+      height: 1260px;
+      background: linear-gradient(180deg, #fbfdff 0%, #ffffff 100%);
+    }
+
+    .lane {
+      fill: var(--lane);
+      stroke: #dfe7f2;
+      stroke-width: 1.2;
+    }
+
+    .lane-title {
+      fill: var(--ink);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .lane-subtitle {
+      fill: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .group {
+      fill: rgba(255, 255, 255, .72);
+      stroke-width: 2;
+      filter: drop-shadow(0 10px 20px rgba(15, 23, 42, .08));
+    }
+
+    .writer-group { stroke: rgba(22, 163, 74, .62); fill: rgba(22, 163, 74, .06); }
+    .director-group { stroke: rgba(124, 58, 237, .62); fill: rgba(124, 58, 237, .06); }
+    .av-group { stroke: rgba(8, 145, 178, .62); fill: rgba(8, 145, 178, .06); }
+    .state-group { stroke: rgba(249, 115, 22, .72); fill: rgba(249, 115, 22, .07); }
+
+    .node-shape {
+      fill: #fff;
+      stroke-width: 2.1;
+      filter: drop-shadow(0 8px 13px rgba(15, 23, 42, .10));
+    }
+
+    .node text {
+      fill: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .node .sub {
+      fill: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .input .node-shape { stroke: var(--input); }
+    .producer .node-shape { stroke: var(--producer); }
+    .writer .node-shape { stroke: var(--writer); }
+    .review .node-shape { stroke: var(--review); }
+    .repair .node-shape { stroke: var(--repair); }
+    .director .node-shape { stroke: var(--director); }
+    .av .node-shape { stroke: var(--av); }
+    .art .node-shape { stroke: var(--art); }
+    .asset .node-shape { stroke: var(--asset); }
+    .safety .node-shape { stroke: var(--safety); }
+    .score .node-shape { stroke: var(--score); }
+    .state .node-shape { stroke: var(--state); }
+
+    .edge {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 2.2;
+      marker-end: url(#arrow);
+    }
+
+    .edge-soft {
+      fill: none;
+      stroke: var(--soft);
+      stroke-width: 1.7;
+      marker-end: url(#arrowSoft);
+    }
+
+    .edge-repair {
+      fill: none;
+      stroke: var(--repair);
+      stroke-width: 2;
+      stroke-dasharray: 7 6;
+      marker-end: url(#arrowRepair);
+    }
+
+    .edge-state {
+      fill: none;
+      stroke: var(--state);
+      stroke-width: 1.55;
+      stroke-dasharray: 5 6;
+      opacity: .75;
+      marker-end: url(#arrowState);
+    }
+
+    .edge-label {
+      fill: var(--muted);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .repair-label {
+      fill: var(--repair);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .state-label {
+      fill: var(--asset);
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .badge {
+      fill: #f4f7fb;
+      stroke: #d7e0ed;
+      stroke-width: 1;
+    }
+
+    .badge-text {
+      fill: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .legend-item {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      padding: 11px 12px;
+      border: 1px solid #dfe7f2;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .92);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .legend-item strong { color: var(--ink); }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex: 0 0 auto;
+    }
+
+    .notes {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border: 1px solid #dfe7f2;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .92);
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .notes strong { color: var(--ink); }
+
+    .dim .layer-main,
+    .dim .layer-repair,
+    .dim .layer-safety,
+    .dim .layer-state,
+    .dim .layer-asset {
+      opacity: .16;
+    }
+
+    .dim .active { opacity: 1; }
+
+    @media print {
+      body { background: #fff; }
+      .page { padding: 0; max-width: none; min-width: 0; }
+      header, .legend, .notes { display: none; }
+      .board { border: 0; box-shadow: none; overflow: visible; }
+      svg { width: 100%; height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <h1>AI短剧制作方案生成智能体流程图 V4</h1>
+        <p class="subtitle">V4 将 LangGraph 落地所需的条件边显式化：安全、质量、一致性、终验均输出结构化 gate 结果；所有失败分支统一进入 Repair Planner，再由 Producer Router 根据 RepairPlan 做局部返工。</p>
+      </div>
+      <div class="actions" aria-label="图层操作">
+        <button type="button" class="active" data-focus="all">全部</button>
+        <button type="button" data-focus="main">主流程</button>
+        <button type="button" data-focus="repair">返工</button>
+        <button type="button" data-focus="safety">安全</button>
+        <button type="button" data-focus="asset">资产</button>
+        <button type="button" data-focus="state">状态</button>
+        <button type="button" id="downloadSvg">下载 SVG</button>
+        <button type="button" onclick="window.print()">打印 / PDF</button>
+      </div>
+    </header>
+
+    <section class="board" aria-label="AI短剧制作方案生成智能体流程图">
+      <svg id="flowSvg" viewBox="0 0 1900 1260" role="img" aria-labelledby="svgTitle svgDesc">
+        <title id="svgTitle">AI短剧制作方案生成智能体流程图 V4</title>
+        <desc id="svgDesc">用户请求经过输入安全审核、需求分析、制片人 Brief Gate、制片人路由、编剧子图、剧本审核、质量评分、剧本安全、文本一致性、导演子图、视听设计、镜头视听安全、美术组、Prompt 安全、资产管理、制作一致性、最终安全、制片人最终验收和最终输出。所有失败分支统一进入返工规划器，再回到制片人路由做局部返工。</desc>
+
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 Z" fill="#64748b"></path>
+          </marker>
+          <marker id="arrowSoft" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 Z" fill="#a8b4c4"></path>
+          </marker>
+          <marker id="arrowRepair" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 Z" fill="#dc2626"></path>
+          </marker>
+          <marker id="arrowState" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 Z" fill="#f97316"></path>
+          </marker>
+        </defs>
+      </svg>
+    </section>
+
+    <section class="legend" aria-label="图例">
+      <div class="legend-item"><span class="dot" style="background: var(--producer)"></span><span><strong>Producer Router</strong>：只做阶段推进、条件路由、返工限次、人机确认和最终验收。</span></div>
+      <div class="legend-item"><span class="dot" style="background: var(--repair)"></span><span><strong>Repair Planner</strong>：统一接收失败报告，输出 target_node、scope、keep_unchanged 和修复指令。</span></div>
+      <div class="legend-item"><span class="dot" style="background: var(--safety)"></span><span><strong>安全分级</strong>：输入、剧本、镜头/视听、视觉 Prompt、最终汇总分层审核。</span></div>
+      <div class="legend-item"><span class="dot" style="background: var(--asset)"></span><span><strong>资产管理</strong>：角色、场景、道具、声音、镜头和 Prompt 采用稳定 ID 与版本关系。</span></div>
+      <div class="legend-item"><span class="dot" style="background: var(--state)"></span><span><strong>状态中心</strong>：Graph State 存轻量引用，Artifact Store 存长文本，Asset Registry 存资产关系。</span></div>
+    </section>
+
+    <section class="notes">
+      <strong>V4 修改点：</strong>补齐输入安全、镜头/视听安全、Prompt 安全、最终验收的显式条件门；移除 Prompt 风险绕回镜头/视听审核的歧义；终验不通过也进入统一返工闭环；所有条件边都可直接映射为 LangGraph 的结构化路由函数。
+    </section>
+  </main>
+
+  <script>
+    const svg = document.getElementById("flowSvg");
+    const ns = "http://www.w3.org/2000/svg";
+
+    const lanes = [
+      ["输入与需求", "Input / Brief", 24, 40, 208, 980],
+      ["制片调度", "Supervisor / Router", 246, 40, 214, 980],
+      ["编剧子图", "Writer Subgraph", 474, 40, 274, 980],
+      ["审核与返工", "Review / Repair", 762, 40, 288, 980],
+      ["导演与视听", "Director / AV", 1064, 40, 286, 980],
+      ["美术与资产", "Art / Assets", 1364, 40, 224, 980],
+      ["终审输出", "Final Package", 1602, 40, 274, 980]
+    ];
+
+    const groups = [
+      { className: "writer-group layer-main layer-repair", x: 498, y: 118, w: 226, h: 552, title: "Writer Subgraph", sub: "可重入 / 可局部返工" },
+      { className: "director-group layer-main layer-repair layer-safety", x: 1092, y: 118, w: 230, h: 328, title: "Director Subgraph", sub: "导演方案" },
+      { className: "av-group layer-main layer-repair layer-safety", x: 1092, y: 494, w: 230, h: 236, title: "AV Design Subgraph", sub: "摄影 / 灯光 / 声音 / 特效可并行" },
+      { className: "state-group layer-state", x: 404, y: 1060, w: 1090, h: 148, title: "Runtime State Hub", sub: "Graph State 保存轻量引用；Artifact Store 保存长文本；Asset Registry 保存资产关系" }
+    ];
+
+    const nodes = [
+      { id: "user", type: "rect", className: "input layer-main", x: 56, y: 128, w: 152, h: 62, title: "用户 / 外部请求", sub: "题材 / 平台 / 风格" },
+      { id: "inputSafety", type: "rect", className: "safety layer-main layer-safety", x: 56, y: 236, w: 152, h: 64, title: "输入安全审核", sub: "Safety L1" },
+      { id: "inputGate", type: "diamond", className: "safety layer-main layer-safety", x: 120, y: 366, w: 152, h: 94, title: "输入安全", sub: "通过?" },
+      { id: "rewrite", type: "rect", className: "input layer-main layer-safety", x: 56, y: 500, w: 152, h: 70, title: "改写 / 终止", sub: "Human-in-the-loop" },
+      { id: "brief", type: "rect", className: "input layer-main", x: 56, y: 650, w: 152, h: 70, title: "需求分析 Agent", sub: "Creative Brief" },
+
+      { id: "briefGate", type: "diamond", className: "producer layer-main", x: 353, y: 230, w: 170, h: 100, title: "Brief 是否", sub: "足够启动?" },
+      { id: "supplement", type: "rect", className: "input layer-main", x: 276, y: 374, w: 154, h: 68, title: "用户补充需求", sub: "Human Confirm" },
+      { id: "producer", type: "rect", className: "producer layer-main layer-repair", x: 276, y: 526, w: 154, h: 78, title: "制片人 Agent", sub: "Producer Router" },
+      { id: "localRoute", type: "rect", className: "repair layer-repair", x: 276, y: 724, w: 154, h: 68, title: "局部返工路由", sub: "按 target_node 回流" },
+
+      { id: "storyBible", type: "step", className: "writer layer-main layer-repair", x: 522, y: 204, w: 178, h: 40, num: "0", title: "Story Bible / 世界圣经" },
+      { id: "storyConcept", type: "step", className: "writer layer-main layer-repair", x: 522, y: 268, w: 178, h: 40, num: "1", title: "创建故事梗概" },
+      { id: "characters", type: "step", className: "writer layer-main layer-repair layer-asset", x: 522, y: 332, w: 178, h: 40, num: "2", title: "确定人物关系" },
+      { id: "outline", type: "step", className: "writer layer-main layer-repair", x: 522, y: 396, w: 178, h: 40, num: "3", title: "构造分集大纲" },
+      { id: "episodeScript", type: "step", className: "writer layer-main layer-repair", x: 522, y: 460, w: 178, h: 40, num: "4", title: "生成单集剧本" },
+      { id: "polish", type: "step", className: "writer layer-main layer-repair", x: 522, y: 524, w: 178, h: 40, num: "5", title: "剧情与对白润色" },
+      { id: "scriptPackage", type: "rect", className: "writer layer-main", x: 522, y: 598, w: 178, h: 46, title: "剧本包", sub: "Script Package" },
+
+      { id: "scriptReview", type: "rect", className: "review layer-main layer-repair", x: 812, y: 128, w: 178, h: 68, title: "剧本审稿人", sub: "逻辑 / 动机 / 节奏" },
+      { id: "qualityScore", type: "rect", className: "score layer-main layer-repair", x: 812, y: 232, w: 178, h: 66, title: "质量评分器", sub: "Quality Scoring" },
+      { id: "qualityGate", type: "diamond", className: "score layer-main layer-repair", x: 901, y: 374, w: 170, h: 96, title: "质量是否", sub: "达标?" },
+      { id: "scriptSafety", type: "rect", className: "safety layer-main layer-safety layer-repair", x: 812, y: 474, w: 178, h: 66, title: "剧本安全审核", sub: "Safety L2 文本" },
+      { id: "scriptSafetyGate", type: "diamond", className: "safety layer-main layer-safety layer-repair", x: 901, y: 620, w: 170, h: 96, title: "剧本安全", sub: "通过?" },
+      { id: "textContinuity", type: "rect", className: "review layer-main layer-repair", x: 812, y: 722, w: 178, h: 66, title: "剧本一致性审核", sub: "Continuity L1" },
+      { id: "textGate", type: "diamond", className: "review layer-main layer-repair", x: 901, y: 870, w: 170, h: 96, title: "文本一致性", sub: "通过?" },
+      { id: "repairPlanner", type: "rect", className: "repair layer-repair", x: 822, y: 954, w: 158, h: 62, title: "返工规划器", sub: "RepairPlan" },
+
+      { id: "sceneBreakdown", type: "small", className: "director layer-main layer-repair layer-safety", x: 1118, y: 206, w: 178, h: 34, title: "1 场景拆解" },
+      { id: "shotDesign", type: "small", className: "director layer-main layer-repair layer-safety", x: 1118, y: 254, w: 178, h: 34, title: "2 分镜设计" },
+      { id: "performance", type: "small", className: "director layer-main layer-repair", x: 1118, y: 302, w: 178, h: 34, title: "3 表演调度" },
+      { id: "rhythm", type: "small", className: "director layer-main layer-repair", x: 1118, y: 350, w: 178, h: 34, title: "4 情绪节奏把控" },
+      { id: "intent", type: "small", className: "director layer-main layer-repair", x: 1118, y: 398, w: 178, h: 34, title: "5 镜头意图阐述" },
+      { id: "camera", type: "small", className: "av layer-main layer-repair layer-safety", x: 1118, y: 594, w: 78, h: 40, title: "摄影" },
+      { id: "lighting", type: "small", className: "av layer-main layer-repair layer-safety", x: 1218, y: 594, w: 78, h: 40, title: "灯光" },
+      { id: "sound", type: "small", className: "av layer-main layer-repair layer-safety", x: 1118, y: 654, w: 78, h: 40, title: "声音" },
+      { id: "vfx", type: "small", className: "av layer-main layer-repair layer-safety", x: 1218, y: 654, w: 78, h: 40, title: "特效" },
+      { id: "avPackage", type: "small", className: "av layer-main", x: 1118, y: 706, w: 178, h: 34, title: "AV Package 汇总" },
+      { id: "shotSafety", type: "rect", className: "safety layer-main layer-safety layer-repair", x: 1092, y: 786, w: 230, h: 62, title: "镜头 / 视听安全审核", sub: "Safety L3a Shot / AV" },
+      { id: "shotGate", type: "diamond", className: "safety layer-main layer-safety layer-repair", x: 1207, y: 920, w: 178, h: 96, title: "镜头视听", sub: "安全通过?" },
+
+      { id: "artAgent", type: "rect", className: "art layer-main layer-repair layer-safety", x: 1392, y: 128, w: 168, h: 72, title: "美术组 Agent", sub: "角色 / 场景 / Prompt" },
+      { id: "promptSafety", type: "rect", className: "safety layer-main layer-safety layer-repair", x: 1392, y: 250, w: 168, h: 66, title: "Prompt 安全审核", sub: "Safety L3b Visual" },
+      { id: "promptGate", type: "diamond", className: "safety layer-main layer-safety layer-repair", x: 1476, y: 390, w: 168, h: 94, title: "Prompt 安全", sub: "通过?" },
+      { id: "assetManager", type: "rect", className: "asset layer-main layer-asset layer-state layer-repair", x: 1392, y: 500, w: 168, h: 72, title: "资产管理员", sub: "Asset Registry" },
+      { id: "productionContinuity", type: "rect", className: "review layer-main layer-repair layer-asset", x: 1392, y: 628, w: 168, h: 68, title: "制作一致性审核", sub: "Continuity L2" },
+      { id: "productionGate", type: "diamond", className: "review layer-main layer-repair layer-asset", x: 1476, y: 808, w: 168, h: 94, title: "制作一致性", sub: "通过?" },
+
+      { id: "finalSafety", type: "rect", className: "safety layer-main layer-safety layer-repair", x: 1646, y: 500, w: 178, h: 72, title: "最终安全审核", sub: "Safety L4 汇总" },
+      { id: "finalGate", type: "diamond", className: "safety layer-main layer-safety layer-repair", x: 1735, y: 680, w: 178, h: 96, title: "最终安全", sub: "通过?" },
+      { id: "finalAccept", type: "rect", className: "producer layer-main layer-repair", x: 1646, y: 790, w: 178, h: 72, title: "制片人最终验收", sub: "Final Acceptance" },
+      { id: "acceptGate", type: "diamond", className: "producer layer-main layer-repair", x: 1735, y: 946, w: 178, h: 96, title: "交付包", sub: "通过验收?" },
+      { id: "finalOutput", type: "rect", className: "input layer-main", x: 1646, y: 1072, w: 178, h: 72, title: "最终方案输出", sub: "Brief / Script / AV / Art" },
+
+      { id: "graphState", type: "rect", className: "state layer-state", x: 454, y: 1140, w: 238, h: 44, title: "Graph State" },
+      { id: "artifactStore", type: "rect", className: "state layer-state", x: 824, y: 1140, w: 238, h: 44, title: "Artifact Store" },
+      { id: "assetRegistry", type: "rect", className: "state layer-state layer-asset", x: 1194, y: 1140, w: 238, h: 44, title: "Asset Registry" }
+    ];
+
+    const nodeMap = new Map(nodes.map((node) => [node.id, node]));
+
+    const edges = [
+      ["user", "inputSafety", "main", "bottom", "top"],
+      ["inputSafety", "inputGate", "main", "bottom", "top"],
+      ["inputGate", "brief", "main", "bottom", "top", "通过"],
+      ["inputGate", "rewrite", "repair", "left", "top", "不通过/需改写"],
+      ["rewrite", "inputSafety", "repair", "right", "left"],
+      ["brief", "briefGate", "main", "right", "left"],
+      ["briefGate", "producer", "main", "bottom", "top", "完整"],
+      ["briefGate", "supplement", "repair", "left", "right", "缺失"],
+      ["supplement", "brief", "repair", "left", "right"],
+      ["producer", "storyBible", "main", "right", "left"],
+
+      ["storyBible", "storyConcept", "soft", "bottom", "top"],
+      ["storyConcept", "characters", "soft", "bottom", "top"],
+      ["characters", "outline", "soft", "bottom", "top"],
+      ["outline", "episodeScript", "soft", "bottom", "top"],
+      ["episodeScript", "polish", "soft", "bottom", "top"],
+      ["polish", "scriptPackage", "soft", "bottom", "top"],
+      ["scriptPackage", "scriptReview", "main", "right", "left"],
+      ["scriptReview", "qualityScore", "main", "bottom", "top"],
+      ["qualityScore", "qualityGate", "main", "bottom", "top"],
+      ["qualityGate", "scriptSafety", "main", "bottom", "top", "通过"],
+      ["qualityGate", "repairPlanner", "repair", "right", "right", "不通过"],
+      ["scriptSafety", "scriptSafetyGate", "main", "bottom", "top"],
+      ["scriptSafetyGate", "textContinuity", "main", "bottom", "top", "通过"],
+      ["scriptSafetyGate", "repairPlanner", "repair", "left", "left", "不通过"],
+      ["textContinuity", "textGate", "main", "bottom", "top"],
+      ["textGate", "sceneBreakdown", "main", "right", "left", "通过"],
+      ["textGate", "repairPlanner", "repair", "left", "top", "不通过"],
+
+      ["sceneBreakdown", "shotDesign", "soft", "bottom", "top"],
+      ["shotDesign", "performance", "soft", "bottom", "top"],
+      ["performance", "rhythm", "soft", "bottom", "top"],
+      ["rhythm", "intent", "soft", "bottom", "top"],
+      ["intent", "camera", "main", "bottom", "top"],
+      ["intent", "lighting", "main", "bottom", "top"],
+      ["intent", "sound", "main", "bottom", "top"],
+      ["intent", "vfx", "main", "bottom", "top"],
+      ["camera", "avPackage", "soft", "bottom", "top"],
+      ["lighting", "avPackage", "soft", "bottom", "top"],
+      ["sound", "avPackage", "soft", "bottom", "top"],
+      ["vfx", "avPackage", "soft", "bottom", "top"],
+      ["avPackage", "shotSafety", "main", "bottom", "top"],
+      ["shotSafety", "shotGate", "main", "bottom", "top"],
+      ["shotGate", "artAgent", "main", "right", "left", "通过"],
+      ["shotGate", "repairPlanner", "repair", "left", "right", "不通过"],
+
+      ["artAgent", "promptSafety", "main", "bottom", "top"],
+      ["promptSafety", "promptGate", "main", "bottom", "top"],
+      ["promptGate", "assetManager", "main", "bottom", "top", "通过"],
+      ["promptGate", "repairPlanner", "repair", "left", "right", "不通过"],
+      ["assetManager", "productionContinuity", "main", "bottom", "top"],
+      ["productionContinuity", "productionGate", "main", "bottom", "top"],
+      ["productionGate", "finalSafety", "main", "right", "left", "通过"],
+      ["productionGate", "repairPlanner", "repair", "left", "right", "不通过"],
+      ["finalSafety", "finalGate", "main", "bottom", "top"],
+      ["finalGate", "finalAccept", "main", "bottom", "top", "通过"],
+      ["finalGate", "repairPlanner", "repair", "left", "right", "不通过"],
+      ["finalAccept", "acceptGate", "main", "bottom", "top"],
+      ["acceptGate", "finalOutput", "main", "bottom", "top", "通过"],
+      ["acceptGate", "repairPlanner", "repair", "left", "right", "需修改"],
+
+      ["repairPlanner", "producer", "repair", "left", "right", "RepairPlan"],
+      ["producer", "localRoute", "repair", "bottom", "top", "返工模式"],
+      ["localRoute", "storyBible", "repair", "right", "left", "编剧节点"],
+      ["localRoute", "shotDesign", "repair", "right", "left", "导演节点"],
+      ["localRoute", "camera", "repair", "right", "left", "视听节点"],
+      ["localRoute", "artAgent", "repair", "right", "left", "美术节点"],
+      ["localRoute", "assetManager", "repair", "right", "left", "资产节点"]
+    ];
+
+    const stateEdges = [
+      ["producer", "graphState"],
+      ["scriptPackage", "artifactStore"],
+      ["repairPlanner", "artifactStore"],
+      ["shotSafety", "artifactStore"],
+      ["assetManager", "assetRegistry"],
+      ["characters", "assetRegistry"],
+      ["finalOutput", "artifactStore"]
+    ];
+
+    function el(name, attrs = {}) {
+      const node = document.createElementNS(ns, name);
+      for (const [key, value] of Object.entries(attrs)) {
+        node.setAttribute(key, value);
+      }
+      return node;
+    }
+
+    function addText(parent, x, y, text, className = "", anchor = "middle") {
+      const item = el("text", { x, y, "text-anchor": anchor });
+      if (className) item.setAttribute("class", className);
+      item.textContent = text;
+      parent.appendChild(item);
+      return item;
+    }
+
+    function port(node, side) {
+      const cx = node.type === "diamond" ? node.x : node.x + node.w / 2;
+      const cy = node.type === "diamond" ? node.y : node.y + node.h / 2;
+      if (node.type === "diamond") {
+        if (side === "left") return [node.x - node.w / 2, node.y];
+        if (side === "right") return [node.x + node.w / 2, node.y];
+        if (side === "top") return [node.x, node.y - node.h / 2];
+        return [node.x, node.y + node.h / 2];
+      }
+      if (side === "left") return [node.x, cy];
+      if (side === "right") return [node.x + node.w, cy];
+      if (side === "top") return [cx, node.y];
+      return [cx, node.y + node.h];
+    }
+
+    function pathBetween(fromNode, toNode, fromSide, toSide) {
+      const [x1, y1] = port(fromNode, fromSide);
+      const [x2, y2] = port(toNode, toSide);
+      if (Math.abs(x1 - x2) < 8 || Math.abs(y1 - y2) < 8) {
+        return `M${x1} ${y1} L${x2} ${y2}`;
+      }
+      if (fromSide === "right" && toSide === "left") {
+        const mid = Math.max(40, Math.abs(x2 - x1) / 2);
+        return `M${x1} ${y1} C${x1 + mid} ${y1}, ${x2 - mid} ${y2}, ${x2} ${y2}`;
+      }
+      if (fromSide === "left" && toSide === "right") {
+        const mid = Math.max(40, Math.abs(x1 - x2) / 2);
+        return `M${x1} ${y1} C${x1 - mid} ${y1}, ${x2 + mid} ${y2}, ${x2} ${y2}`;
+      }
+      const midY = (y1 + y2) / 2;
+      return `M${x1} ${y1} C${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
+    }
+
+    function edgeClass(kind) {
+      if (kind === "repair") return "edge-repair layer-repair";
+      if (kind === "soft") return "edge-soft layer-main";
+      return "edge layer-main";
+    }
+
+    function labelClass(kind) {
+      return kind === "repair" ? "repair-label" : "edge-label";
+    }
+
+    function drawLanes() {
+      for (const [title, sub, x, y, w, h] of lanes) {
+        svg.appendChild(el("rect", { class: "lane", x, y, width: w, height: h, rx: 16 }));
+        addText(svg, x + 22, y + 38, title, "lane-title", "start");
+        addText(svg, x + 22, y + 60, sub, "lane-subtitle", "start");
+      }
+    }
+
+    function drawGroups() {
+      for (const group of groups) {
+        svg.appendChild(el("rect", { class: `group ${group.className}`, x: group.x, y: group.y, width: group.w, height: group.h, rx: 16 }));
+        addText(svg, group.x + 24, group.y + 34, group.title, "lane-title", "start");
+        addText(svg, group.x + 24, group.y + 56, group.sub, "lane-subtitle", "start");
+      }
+    }
+
+    function drawNode(node) {
+      const group = el("g", { class: `node ${node.className}` });
+      if (node.type === "diamond") {
+        const points = [
+          [node.x, node.y - node.h / 2],
+          [node.x + node.w / 2, node.y],
+          [node.x, node.y + node.h / 2],
+          [node.x - node.w / 2, node.y]
+        ].map((point) => point.join(",")).join(" ");
+        group.appendChild(el("polygon", { class: "node-shape", points }));
+        addText(group, node.x, node.y - 5, node.title);
+        addText(group, node.x, node.y + 16, node.sub || "", "");
+      } else {
+        group.appendChild(el("rect", { class: "node-shape", x: node.x, y: node.y, width: node.w, height: node.h, rx: node.type === "small" ? 8 : 11 }));
+        if (node.type === "step") {
+          group.appendChild(el("circle", { cx: node.x + 20, cy: node.y + node.h / 2, r: 12, fill: "var(--writer)" }));
+          addText(group, node.x + 20, node.y + node.h / 2 + 4, node.num, "sub");
+          addText(group, node.x + 42, node.y + node.h / 2 + 5, node.title, "", "start");
+        } else if (node.type === "small") {
+          addText(group, node.x + node.w / 2, node.y + node.h / 2 + 5, node.title);
+        } else {
+          addText(group, node.x + node.w / 2, node.y + node.h / 2 - (node.sub ? 5 : -5), node.title);
+          if (node.sub) addText(group, node.x + node.w / 2, node.y + node.h / 2 + 17, node.sub, "sub");
+        }
+      }
+      svg.appendChild(group);
+    }
+
+    function drawEdge(edge) {
+      const [fromId, toId, kind, fromSide, toSide, label] = edge;
+      const fromNode = nodeMap.get(fromId);
+      const toNode = nodeMap.get(toId);
+      const path = el("path", { class: edgeClass(kind), d: pathBetween(fromNode, toNode, fromSide, toSide) });
+      svg.insertBefore(path, svg.querySelector(".node"));
+      if (label) {
+        const [x1, y1] = port(fromNode, fromSide);
+        const [x2, y2] = port(toNode, toSide);
+        addText(svg, (x1 + x2) / 2, (y1 + y2) / 2 - 8, label, labelClass(kind));
+      }
+    }
+
+    function drawStateEdge(fromId, toId) {
+      const fromNode = nodeMap.get(fromId);
+      const toNode = nodeMap.get(toId);
+      const path = el("path", { class: "edge-state layer-state", d: pathBetween(fromNode, toNode, "bottom", "top") });
+      svg.insertBefore(path, svg.querySelector(".node"));
+    }
+
+    function drawBadges() {
+      svg.appendChild(el("rect", { class: "badge layer-main layer-repair", x: 720, y: 1028, width: 360, height: 30, rx: 9 }));
+      addText(svg, 900, 1048, "所有失败分支统一进入 Repair Planner，不直接跳回创作节点", "badge-text");
+      svg.appendChild(el("rect", { class: "badge layer-state layer-asset", x: 1120, y: 1028, width: 360, height: 30, rx: 9 }));
+      addText(svg, 1300, 1048, "资产管理员是贯穿服务：编剧阶段开始预登记角色/场景/道具 ID", "badge-text");
+      addText(svg, 744, 418, "资产预登记：人物、场景、道具 ID 从编剧阶段开始维护", "state-label", "start");
+    }
+
+    drawLanes();
+    drawGroups();
+    for (const node of nodes) drawNode(node);
+    for (const edge of edges) drawEdge(edge);
+    for (const edge of stateEdges) drawStateEdge(edge[0], edge[1]);
+    drawBadges();
+
+    const buttons = document.querySelectorAll("[data-focus]");
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const focus = button.dataset.focus;
+        buttons.forEach((item) => item.classList.toggle("active", item === button));
+        svg.classList.toggle("dim", focus !== "all");
+        svg.querySelectorAll(".active").forEach((item) => item.classList.remove("active"));
+        if (focus !== "all") {
+          svg.querySelectorAll(".layer-" + focus).forEach((item) => item.classList.add("active"));
+        }
+      });
+    });
+
+    document.getElementById("downloadSvg").addEventListener("click", () => {
+      const clonedSvg = svg.cloneNode(true);
+      clonedSvg.classList.remove("dim");
+      clonedSvg.querySelectorAll(".active").forEach((item) => item.classList.remove("active"));
+      clonedSvg.setAttribute("xmlns", ns);
+      const style = document.createElementNS(ns, "style");
+      style.textContent = Array.from(document.styleSheets)
+        .map((sheet) => Array.from(sheet.cssRules || []).map((rule) => rule.cssText).join("\n"))
+        .join("\n");
+      clonedSvg.insertBefore(style, clonedSvg.firstChild);
+      const source = new XMLSerializer().serializeToString(clonedSvg);
+      const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "drama-agent-flow-v4.svg";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>

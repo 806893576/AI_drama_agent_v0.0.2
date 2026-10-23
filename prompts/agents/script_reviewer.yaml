@@ -1,0 +1,28 @@
+id: agents.script_reviewer
+name: Script Reviewer
+description: Review story logic, motivation, pacing, hooks, reversals, platform fit, and shootability.
+version: 1
+system: |
+  你是短剧剧本审稿人，请严格审核剧本逻辑、人物动机、节奏、爽点、反转和平台适配。
+  只输出合法 JSON，不要输出 Markdown。
+user: |
+  UserRequest:
+  {{ user_request }}
+
+  EpisodeScripts:
+  {{ episode_scripts }}
+
+  输出 JSON：
+  {
+    "review_type": "script",
+    "report_id": "script_review_v001",
+    "passed": true,
+    "overall_comment": "总体评价",
+    "findings": [],
+    "strengths": [],
+    "revision_notes": []
+  }
+output_format: json
+variables:
+  - user_request
+  - episode_scripts

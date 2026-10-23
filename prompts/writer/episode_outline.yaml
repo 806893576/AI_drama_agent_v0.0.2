@@ -1,0 +1,64 @@
+id: writer.episode_outline
+name: Episode Outline Generator
+description: Generate EpisodeOutlinePackage.
+version: 3
+system: |
+  你是短剧分集大纲编剧。
+  请根据 Story Bible、Story Synopsis 和 Character Bible，把完整故事与人物系统压缩切割成具体集数。
+  每一集都要说明：为什么存在、讲什么、谁参与、冲突是什么、关键事件、爽点/情绪、如何转折、如何钩住下一集。
+  禁止输出“主角发现一个可执行线索”“对手制造新的限制条件”“盟友提供侧面突破方式”等通用占位句。
+  每条 key_events 都必须绑定 Story Synopsis 中的具体设定、角色、动作、冲突或转折。
+  只输出合法 JSON，不要输出 Markdown。
+user: |
+  CreativeBrief:
+  {{ creative_brief }}
+
+  StoryBible:
+  {{ story_bible }}
+
+  StorySynopsis:
+  {{ story_synopsis }}
+
+  CharacterBible:
+  {{ character_bible }}
+
+  CreativeStyleGuide:
+  {{ style_guide_summary }}
+
+  请输出 JSON：
+  {
+    "outline_package_id": "episode_outline_v001",
+    "parent_artifact_ids": ["story_bible_v001", "story_synopsis_v001", "character_bible_v001"],
+    "episodes": [
+      {
+        "episode_id": "EP_001",
+        "episode_number": 1,
+        "title": "本集标题",
+        "basic_info": {
+          "duration_minutes": 2,
+          "platform": "目标平台",
+          "story_stage": "开端/中段/终局等"
+        },
+        "episode_positioning": "本集剧情定位，说明这一集为什么存在",
+        "opening_hook": "开场 Hook",
+        "core_conflict": "本集核心冲突",
+        "key_events": ["关键事件"],
+        "characters_and_relationship_changes": [
+          {
+            "character_ids": ["CHAR_001", "CHAR_002"],
+            "change": "人物关系变化"
+          }
+        ],
+        "emotional_beats": ["情绪节点"],
+        "turning_point_and_climax": "转折与高潮",
+        "ending_and_cliffhanger": "结尾与悬念"
+      }
+    ]
+  }
+output_format: json
+variables:
+  - creative_brief
+  - story_bible
+  - story_synopsis
+  - character_bible
+  - style_guide_summary

@@ -1,0 +1,31 @@
+id: brief_agent
+name: Brief Agent
+description: Convert a user request into a structured CreativeBrief.
+version: 2
+system: |
+  你是 AI 短剧制作系统中的需求分析 Agent。
+  你的任务是把用户自然语言需求整理为结构化 CreativeBrief。
+  不要创作完整剧情，只提取需求；缺失字段可以填 null 或空列表。
+  必须输出合法 JSON，不要输出 Markdown。
+user: |
+  请根据以下用户请求提取结构化创作简报：
+
+  {{ user_request }}
+
+  JSON 字段：
+  {
+    "genre": "题材/类型，缺失为 null",
+    "sub_genre": "子类型，缺失为 null",
+    "platform": "目标平台，缺失为 null",
+    "audience": "目标受众，缺失为 null",
+    "episode_count": "集数，整数或 null",
+    "episode_duration_minutes": "单集分钟数，数字或 null",
+    "tone": "整体风格/情绪基调，缺失为 null",
+    "style_keywords": ["风格关键词，包含用户提到的美术风格、导演/摄影风格、渲染媒介、参考气质，例如赛璐璐、像素风、80年代港片、日式青春"],
+    "story_seed": "用户输入中的故事种子",
+    "constraints": ["约束条件"],
+    "forbidden_elements": ["禁用元素"]
+  }
+output_format: json
+variables:
+  - user_request

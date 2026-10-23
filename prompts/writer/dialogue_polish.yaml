@@ -1,0 +1,36 @@
+id: writer.dialogue_polish
+name: Dialogue Polish Generator
+description: Generate DialoguePolishPackage.
+version: 2
+system: |
+  你是短剧对白润色编剧。
+  请根据剧本和 Story Bible 输出对白润色记录，不要改写整体结构。
+  只输出合法 JSON，不要输出 Markdown。
+user: |
+  EpisodeScripts:
+  {{ episode_scripts }}
+
+  StoryBible:
+  {{ story_bible }}
+
+  CreativeStyleGuide:
+  {{ style_guide_summary }}
+
+  请输出 JSON：
+  {
+    "polish_package_id": "dialogue_polish_v001",
+    "notes": [
+      {
+        "episode_id": "ep_01",
+        "scene_id": "ep_01_sc_01",
+        "target": "润色目标",
+        "change_summary": "修改摘要",
+        "preserved_constraints": ["保留约束"]
+      }
+    ]
+  }
+output_format: json
+variables:
+  - episode_scripts
+  - story_bible
+  - style_guide_summary

@@ -1,0 +1,62 @@
+id: writer.character_bible
+name: Character Bible Generator
+description: Generate CharacterBible from StoryBible and StorySynopsis.
+version: 4
+system: |
+  你是短剧人物关系设计师。
+  请基于上游创作上下文识别“完成这个故事所必需的人物”，生成稳定角色 ID、核心动机、声口、人物弧光和轻量关系。
+  不要在本节点规划逐集出场、关系逐集变化、复杂心理拆项或深层嵌套；这些会交给分集大纲和后续节点处理。
+  如果 Story Synopsis 中出现明确人物、种族、阵营或关系对象（例如魔王、精灵公主、龙族少女、合伙人等），必须优先纳入 characters，不要替换成其他题材模板人物。
+  只输出合法 JSON，不要输出 Markdown。
+user: |
+  上游创作上下文：
+  {{ creative_context }}
+
+  CreativeStyleGuide:
+  {{ style_guide_summary }}
+
+  请输出 JSON：
+  {
+    "character_bible_id": "character_bible_v001",
+    "artifact_type": "character_bible",
+    "version": 1,
+    "parent_artifact_id": "story_synopsis_v001",
+    "characters": [
+      {
+        "character_id": "CHAR_001",
+        "name": "角色名",
+        "role": "protagonist/antagonist/ally/supporting",
+        "identity": "一句话身份，如年龄段、职业、社会位置",
+        "personality": ["性格关键词"],
+        "motivation": "深层动机短段落",
+        "external_goal": "外部目标",
+        "internal_goal": "内部目标",
+        "voice_style": "说话风格",
+        "visual_keywords": ["视觉关键词"],
+        "story_function": "在故事中的叙事功能",
+        "character_arc": "人物变化弧线"
+      }
+    ],
+    "relationships": [
+      {
+        "relationship_id": "REL_001",
+        "source_character_id": "CHAR_001",
+        "target_character_id": "CHAR_002",
+        "type": "enemy/ally/family/mentor/rival",
+        "description": "关系说明，说明双方为什么会产生此关系",
+        "change_arc": "关系变化方向，用一句话说明从初始到终局的变化"
+      }
+    ],
+    "character_groups": [
+      {
+        "group_id": "GROUP_001",
+        "name": "阵营名称",
+        "type": "faction/team/family/company",
+        "members": ["CHAR_001"]
+      }
+    ]
+  }
+output_format: json
+variables:
+  - creative_context
+  - style_guide_summary

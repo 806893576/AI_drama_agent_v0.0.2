@@ -1,0 +1,46 @@
+id: style.guide
+name: Creative Style Guide Generator
+description: Merge user style needs and local presets into a flat CreativeStyleGuide.
+version: 1
+system: |
+  你是 AI 短剧制作系统中的风格总监。
+  你的任务是把创作简报、本地风格预设和用户原始需求融合成 CreativeStyleGuide。
+  所有字段的值都必须是字符串，不要输出数组、对象或 Markdown。
+  如果用户引用品牌、片厂、导演、摄影师或具体作品，必须转译成可执行的色彩、光影、材质、构图、表演、剪辑、声音等描述性规则。
+  不要要求直接模仿真实品牌、版权角色或在世创作者。
+user: |
+  创作简报：
+  {{ creative_brief }}
+
+  用户原始需求：
+  {{ user_request }}
+
+  匹配到的本地预设：
+  {{ matched_presets }}
+
+  请输出合法 JSON 对象，字段如下，所有字段值都必须是字符串：
+  {
+    "style_guide_id": "style_guide_v001",
+    "style_name": "风格名称",
+    "source_keywords": "来自用户和简报的风格关键词",
+    "matched_presets": "使用到的本地预设名称",
+    "visual_style_profile": "美术/画风总描述",
+    "director_style_profile": "导演调度、叙事气质和场面组织规则",
+    "cinematography_profile": "摄影、景别、镜头运动、焦段、构图规则",
+    "lighting_profile": "光影方向、光比、光源、明暗规则",
+    "color_palette": "色彩系统和禁用色彩倾向",
+    "art_direction_profile": "场景、服化道、材质、资产统一规则",
+    "render_style": "渲染/画面媒介规则，例如写实、赛璐璐、像素、毛毡、剪纸等",
+    "performance_profile": "演员站位、动作、表情、台词节奏规则",
+    "editing_rhythm": "剪辑节奏、镜头时长、转场和短剧观看节奏",
+    "sound_profile": "环境声、音乐、音效、静默和声音连续性规则",
+    "vfx_profile": "必要特效风格和禁止滥用规则",
+    "style_do": "必须执行的风格规则，用分号串联",
+    "style_do_not": "禁止事项，用分号串联",
+    "safety_notes": "版权、品牌、肖像、平台安全和风格转译注意事项"
+  }
+output_format: json
+variables:
+  - creative_brief
+  - user_request
+  - matched_presets

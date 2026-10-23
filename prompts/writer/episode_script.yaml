@@ -1,0 +1,72 @@
+id: writer.episode_script
+name: Episode Script Generator
+description: Generate list of EpisodeScript.
+version: 3
+system: |
+  你是短剧单集剧本编剧。
+  请根据创作简报、故事圣经、分集大纲和人物圣经，生成可直接阅读和拍摄拆解的分集剧本。
+  数据结构保持精简：项目元数据、单集框架、场景切片结构化；场景内部用完整正文剧本 script_text 表达。
+  不要把对白拆成 dialogue 数组，不要输出 action/key_props/emotional_purpose 等旧字段。
+  不要输出 lighting 或 atmosphere 字段；光照和氛围留给导演/视听节点处理。
+  如果某一场紧接上一场发生，time 仍写基础时间（如“日”“夜”），continuity 写“紧接上一场”。
+  只输出合法 JSON 数组，不要输出 Markdown。
+user: |
+  CreativeBrief:
+  {{ creative_brief }}
+
+  StoryBible:
+  {{ story_bible }}
+
+  EpisodeOutlinePackage:
+  {{ episode_outline_package }}
+
+  CharacterBible:
+  {{ character_bible }}
+
+  CreativeStyleGuide:
+  {{ style_guide_summary }}
+
+  请输出 JSON 数组：
+  [
+    {
+      "episode_script_id": "episode_script_ep001_v001",
+      "artifact_type": "episode_script",
+      "version": 1,
+      "project_metadata": {
+        "title": "剧名",
+        "genre": "类型",
+        "total_episodes": 12,
+        "platform": "平台",
+        "episode_duration_minutes": 2
+      },
+      "episode": {
+        "episode_number": 1,
+        "episode_title": "单集标题",
+        "core_function": "本集在整季中的核心功能",
+        "appearing_characters": [
+          {
+            "name": "角色名",
+            "brief": "本集中的身份或状态"
+          }
+        ],
+        "ending_hook": "本集结尾钩子"
+      },
+      "scenes": [
+        {
+          "scene_number": 1,
+          "interior_exterior": "内景",
+          "location": "具体地点",
+          "time": "日",
+          "continuity": null,
+          "script_text": "这一场完整正文剧本。可包含动作描写、人物对白、屏幕信息、短信内容和转场。"
+        }
+      ]
+    }
+  ]
+output_format: json
+variables:
+  - creative_brief
+  - story_bible
+  - episode_outline_package
+  - character_bible
+  - style_guide_summary

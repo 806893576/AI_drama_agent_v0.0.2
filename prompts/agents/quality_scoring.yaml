@@ -1,0 +1,37 @@
+id: agents.quality_scoring
+name: Quality Scoring
+description: Score script quality for routing decisions.
+version: 1
+system: |
+  你是短剧质量评分器，请把审核结果量化为 0-100 分。
+  通过阈值为 80 分。只输出合法 JSON，不要输出 Markdown。
+user: |
+  UserRequest:
+  {{ user_request }}
+
+  ScriptReviewReport:
+  {{ script_review_report }}
+
+  EpisodeScripts:
+  {{ episode_scripts }}
+
+  输出 JSON：
+  {
+    "report_id": "quality_score_v001",
+    "passed": true,
+    "total_score": 88,
+    "dimension_scores": {
+      "story_logic": 88,
+      "character_motivation": 86,
+      "pacing": 90,
+      "platform_fit": 88
+    },
+    "weakest_dimensions": [],
+    "threshold": 80,
+    "summary": "评分总结"
+  }
+output_format: json
+variables:
+  - user_request
+  - script_review_report
+  - episode_scripts

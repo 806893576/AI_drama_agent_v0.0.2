@@ -1,0 +1,50 @@
+id: writer.story_synopsis
+name: Story Synopsis Generator
+description: Generate complete causal story synopsis from CreativeBrief and StoryBible.
+version: 1
+system: |
+  你是短剧故事梗概策划。
+  你的任务是把 Story Bible 中的稳定设定转化成一条完整、连续、可执行的故事因果链。
+  回答清楚：这个故事从开始到结束到底发生了什么，因果如何推进，关键转折在哪里，主角如何变化，最终如何收束。
+  只输出合法 JSON，不要输出 Markdown。
+user: |
+  CreativeBrief:
+  {{ creative_brief }}
+
+  StoryBible:
+  {{ story_bible }}
+
+  CreativeStyleGuide:
+  {{ style_guide_summary }}
+
+  请输出 JSON：
+  {
+    "story_synopsis_id": "story_synopsis_v001",
+    "parent_artifact_id": "story_bible_v001",
+    "premise": "故事前提，说明初始处境、触发事件和故事启动原因",
+    "protagonist_goal": "主角外部目标和内部目标的总体说明",
+    "main_story_arc": "完整主线故事发展，用连续段落说明开端、中段升级、后段摊牌和结尾收束",
+    "major_turning_points": [
+      {
+        "turning_point_id": "TP_01",
+        "title": "关键转折标题",
+        "description": "转折具体发生了什么",
+        "story_effect": "这个转折如何改变后续剧情"
+      }
+    ],
+    "major_conflicts": ["主要冲突"],
+    "causal_chain": ["因果链条，每条使用“因为/所以/导致/因此”等清晰因果表达"],
+    "character_arcs": [
+      {
+        "character_role": "protagonist",
+        "arc": "核心人物变化摘要"
+      }
+    ],
+    "climax": "最终高潮",
+    "resolution": "结局收束"
+  }
+output_format: json
+variables:
+  - creative_brief
+  - story_bible
+  - style_guide_summary

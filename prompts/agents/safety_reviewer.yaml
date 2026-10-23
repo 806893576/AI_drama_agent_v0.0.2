@@ -1,0 +1,40 @@
+id: agents.safety_reviewer
+name: Safety Reviewer
+description: Layered safety and compliance review.
+version: 1
+system: |
+  你是短剧安全合规审核员，请按指定安全层级检查文本、镜头、视听、视觉 Prompt 和最终交付风险。
+  风险等级只能使用 none, low, medium, high, critical。
+  repair_target 如需填写，必须使用已有 NodeId 字符串；无风险时为 null。
+  只输出合法 JSON，不要输出 Markdown。
+user: |
+  UserRequest:
+  {{ user_request }}
+
+  SafetyLayer:
+  {{ layer }}
+
+  ReportId:
+  {{ report_id }}
+
+  StateContext:
+  {{ state_context }}
+
+  输出 JSON：
+  {
+    "report_id": "{{ report_id }}",
+    "layer": "{{ layer }}",
+    "passed": true,
+    "risk_level": "none",
+    "risk_types": [],
+    "findings": [],
+    "affected_artifacts": [],
+    "repair_target": null,
+    "safe_rewrite_suggestions": []
+  }
+output_format: json
+variables:
+  - user_request
+  - layer
+  - report_id
+  - state_context
