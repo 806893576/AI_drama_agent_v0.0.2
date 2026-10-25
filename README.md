@@ -6,6 +6,59 @@
 
 > 本项目目前生成的是短剧制作方案、结构化 JSON 和图像/视频生成 Prompt，不会直接生成最终图片、音频或视频。`final_package` 可以继续交给图像生成、视频生成或其他制作工具使用。
 
+## 🎬 视频作品集
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=2">
+        <img src="assets/日式青春_告白.png" width="160" alt="作品1">
+      </a><br>日式青春_告白
+    </td>
+    <td align="center">
+      <a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=3">
+        <img src="assets/王家卫_追踪.jpg" width="160" alt="作品2">
+      </a><br>王家卫_追踪
+    </td>
+    <td align="center">
+      <a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=3">
+        <img src="assets/赛璐璐_反重力雨伞.png" width="160" alt="作品3">
+      </a><br>赛璐璐_反重力雨伞
+    </td>
+    <td align="center">
+      <a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=4">
+        <img src="assets/邵氏风格_比武.png" width="160" alt="作品4">
+      </a><br>邵氏风格_比武
+    </td>
+    <td align="center">
+      <a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=5">
+        <img src="assets/伪纪录片_独创废弃医院.png" width="160" alt="作品5">
+      </a><br>伪纪录片_独创废弃医院
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=6"><img src="assets/皮克斯风格_罢工的电梯.png" width="160" alt="作品6"></a><br>皮克斯风格_罢工的电梯</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=7"><img src="assets/剪纸风_红狐少女.png" width="160" alt="作品7"></a><br>剪纸风_红狐少女</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=8"><img src="assets/残酷写实主义_冲锋.png" width="160" alt="作品8"></a><br>残酷写实主义_冲锋</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=9"><img src="assets/布达佩斯大饭店风格.png" width="160" alt="作品9"></a><br>布达佩斯大饭店风格_对称理发店</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=10"><img src="assets/日系写实CG_云端遗迹.png" width="160" alt="作品10"></a><br>日系写实CG_云端遗迹</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=11"><img src="assets/敦煌飞天美学_飞天.png" width="160" alt="作品11"></a><br>敦煌飞天美学_飞天</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=12"><img src="assets/远古特设风_奶曼.png" width="160" alt="作品12"></a><br>远古特设风_奶曼</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=13"><img src="assets/8bit像素风_狂战士治疗师.png" width="160" alt="作品13"></a><br>8bit像素风_狂战士治疗师</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=14"><img src="assets/宗门仙侠_废柴小师妹.png" width="160" alt="作品14"></a><br>宗门仙侠_废柴小师妹</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=15"><img src="assets/千禧年中式梦核.png" width="160" alt="作品15"></a><br>千禧年中式梦核</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=16"><img src="assets/极简发布会.png" width="160" alt="作品16"></a><br>极简发布会_ICat</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=17"><img src="assets/环太平洋风格_喵神拯救外滩.png" width="160" alt="作品17"></a><br>环太平洋风格_喵神拯救外滩</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV15fHu6gEjt/?spm_id_from=333.788.videopod.sections&vd_source=9599c51d0393e38293ae98167e30bcd0&p=18"><img src="assets/波普艺术_波点怪兽.png" width="160" alt="作品18"></a><br>波普艺术_波点怪兽</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV1Bdhx6UEnu/?spm_id_from=333.1387.list.card_archive.click&vd_source=9599c51d0393e38293ae98167e30bcd0"><img src="assets/电影化成长叙事_猫与少年时.png" width="160" alt="作品19"></a><br>电影化成长叙事_猫与少年时</td>
+    <td align="center"><a href="https://www.bilibili.com/video/BV1iQnW67EZC/?spm_id_from=333.1387.list.card_archive.click&vd_source=9599c51d0393e38293ae98167e30bcd0"><img src="assets/人宠公路片_悟空没有离开的世界.png" width="160" alt="作品20"></a><br>人宠公路片_悟空没有离开的世界</td>
+  </tr>
+</table>
+
 ## 目录
 
 - [主要功能](#主要功能)
